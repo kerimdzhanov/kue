@@ -73,7 +73,6 @@ describe 'Kue Tests', ->
       .save()
 
 
-
     it 'should receive job result in complete event', (done) ->
       jobs.process 'email-with-results', (job, done)->
         done( null, {finalResult:123} )
@@ -85,7 +84,6 @@ describe 'Kue Tests', ->
         result.finalResult.should.be.equal 123
         done()
       .save()
-
 
 
     it 'should receive job progress event', (done) ->
@@ -102,7 +100,6 @@ describe 'Kue Tests', ->
       .save()
 
 
-
     it 'should receive job progress event with extra data', (done) ->
       jobs.process 'email-to-be-progressed', (job, done)->
         job.progress 1, 2,
@@ -117,7 +114,6 @@ describe 'Kue Tests', ->
         extraData.notifyTime.should.be.equal "2014-11-22"
         done()
       .save()
-
 
 
     it 'should receive job failed attempt events', (done) ->
@@ -140,7 +136,6 @@ describe 'Kue Tests', ->
       .save()
 
 
-
     it 'should receive queue level complete event', (done) ->
       jobs.process 'email-to-be-completed', (job, jdone)->
         jdone( null, { prop: 'val' } )
@@ -152,7 +147,6 @@ describe 'Kue Tests', ->
         title: 'Test Email Job'
         to: 'tj@learnboost.com'
       testJob = jobs.create('email-to-be-completed', job_data).save()
-
 
 
     it 'should receive queue level failed attempt events', (done) ->
@@ -369,7 +363,6 @@ describe 'Kue Tests', ->
         title: 'Test Email Job'
         to: 'tj@learnboost.com'
       job = jobs.create('email-to-be-enqueued', job_data).save()
-
 
 
     it 'should fail a job with TTL is exceeded', (done) ->
