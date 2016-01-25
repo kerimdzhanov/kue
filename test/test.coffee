@@ -5,13 +5,23 @@ describe 'Kue Tests', ->
   jobs = null
   Job = null
 
+  expectAfterEach = false
+
   beforeEach (done) ->
     jobs = kue.createQueue({promotion:{interval:50}})
     Job = kue.Job
+    expectAfterEach = true
     done()
 
   afterEach (done) ->
     console.log '\nafterEach ->'
+
+    unless expectAfterEach
+      console.log(done, done)
+      throw new Error('unexpected afterEach call!')
+
+    expectAfterEach = false
+
     onShutdown = (err) ->
       done(err)
     jobs.shutdown 50, onShutdown
