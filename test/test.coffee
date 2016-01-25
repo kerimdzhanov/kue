@@ -11,6 +11,7 @@ describe 'Kue Tests', ->
     done()
 
   afterEach (done) ->
+    console.log '\nafterEach ->'
     onShutdown = (err) ->
       done(err)
     jobs.shutdown 50, onShutdown
@@ -444,13 +445,13 @@ describe 'Kue Tests', ->
 
     it 'should be able to remove failed jobs', (done) ->
       jobs.failed (err, ids) ->
-        console.log 'ids', ids
         totalJobs.failed = ids.length
         removeJobById id, 'failed', done for id in ids
 
 
     it 'should receive a job remove event', (done) ->
       jobs.on 'job remove', (id, type) ->
+        console.log "job remove -> (#{id} , #{type})"
         if( type == 'removable-job' )
           id.should.be.equal( job.id )
           done()
