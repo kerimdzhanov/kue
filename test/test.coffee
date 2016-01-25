@@ -436,8 +436,13 @@ describe 'Kue Tests', ->
 
     totalJobs = {}
     removeJobById = (id, type, done) ->
+      complete = (err) ->
+        console.log 'removeJobById completed!'
+        done err
+
       Job.remove id, (err) ->
-        done() if not --totalJobs[type]
+        console.log "totalJobs[#{type}] left: #{totalJobs[type]}"
+        complete() if not --totalJobs[type]
 
 
     it 'should be able to remove completed jobs', (done) ->
