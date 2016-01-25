@@ -5,26 +5,12 @@ describe 'Kue Tests', ->
   jobs = null
   Job = null
 
-  expectAfterEach = false
-
-  beforeEach (done) ->
+  beforeEach ->
     jobs = kue.createQueue({promotion:{interval:50}})
     Job = kue.Job
-    expectAfterEach = true
-    done()
 
   afterEach (done) ->
-    console.log '\nafterEach ->'
-
-    unless expectAfterEach
-      console.log(done, done)
-      throw new Error('unexpected afterEach call!')
-
-    expectAfterEach = false
-
-    onShutdown = (err) ->
-      done(err)
-    jobs.shutdown 50, onShutdown
+    jobs.shutdown 50, done
 
   #  before (done) ->
   #    jobs = kue.createQueue({promotion:{interval:100}})
@@ -425,24 +411,16 @@ describe 'Kue Tests', ->
       ).save()
 
 
-  describe.only 'Kue Job Removal', ->
-    beforeEach (done) ->
-      jobs = kue.createQueue({promotion:{interval:50}})
-      Job = kue.Job
-      jobs.process 'sample-job-to-be-cleaned', (job, jdone) ->
-        jdone()
+  describe 'Kue Job Removal', ->
+    beforeEach ->
+      jobs.process 'sample-job-to-be-cleaned', (job, jdone) -> jdone()
       jobs.create( 'sample-job-to-be-cleaned', {title: 'sample-job-to-be-cleaned', id:id} ).save() for id in [1..10]
-      done()
+
 
     totalJobs = {}
     removeJobById = (id, type, done) ->
-      complete = (err) ->
-        console.log 'removeJobById completed!'
-        done err
-
       Job.remove id, (err) ->
-        console.log "totalJobs[#{type}] left: #{totalJobs[type]}"
-        complete() if not --totalJobs[type]
+        done() if not --totalJobs[type]
 
 
     it 'should be able to remove completed jobs', (done) ->
@@ -459,10 +437,8 @@ describe 'Kue Tests', ->
 
     it 'should receive a job remove event', (done) ->
       jobs.on 'job remove', (id, type) ->
-        console.log "job remove -> (#{id} , #{type})"
         if( type == 'removable-job' )
           id.should.be.equal( job.id )
           done()
-      jobs.process 'removable-job', (job, jdone) ->
-        jdone()
+      jobs.process 'removable-job', (job, jdone) -> jdone()
       job = jobs.create('removable-job', {}).save().remove()
