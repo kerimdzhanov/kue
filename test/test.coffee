@@ -24,7 +24,6 @@ describe 'Kue Tests', ->
   #    jobs.client.flushdb done
 
 
-
   describe 'Job Producer', ->
     it 'should save jobs having new id', (done) ->
       job_data =
@@ -164,8 +163,6 @@ describe 'Kue Tests', ->
         (--total).should.be.equal 0
         done()
       newJob = jobs.create('email-to-be-failed', job_data).attempts(2).save()
-
-
 
 
   describe 'Job', ->
@@ -347,8 +344,6 @@ describe 'Kue Tests', ->
         jdone()
 
 
-
-
   describe 'Kue Core', ->
     it 'should receive job enqueue event', (done) ->
       id = null
@@ -376,10 +371,7 @@ describe 'Kue Tests', ->
       ).save()
 
 
-
-
   describe 'Kue Job Concurrency', ->
-
     it 'should process 2 concurrent jobs at the same time', (done) ->
       now = Date.now()
       jobStartTimes = []
@@ -429,10 +421,7 @@ describe 'Kue Tests', ->
       ).save()
 
 
-
-
   describe 'Kue Job Removal', ->
-
     beforeEach (done) ->
       jobs = kue.createQueue({promotion:{interval:50}})
       Job = kue.Job
@@ -442,7 +431,7 @@ describe 'Kue Tests', ->
       done()
 
     totalJobs = {}
-    removeJobById = (id, type, done)->
+    removeJobById = (id, type, done) ->
       Job.remove id, (err) ->
         done() if not --totalJobs[type]
 
@@ -453,12 +442,11 @@ describe 'Kue Tests', ->
         removeJobById id, 'complete', done for id in ids
 
 
-
     it 'should be able to remove failed jobs', (done) ->
       jobs.failed (err, ids) ->
+        console.log 'ids', ids
         totalJobs.failed = ids.length
         removeJobById id, 'failed', done for id in ids
-
 
 
     it 'should receive a job remove event', (done) ->
