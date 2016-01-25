@@ -425,7 +425,7 @@ describe 'Kue Tests', ->
       ).save()
 
 
-  describe 'Kue Job Removal', ->
+  describe.skip 'Kue Job Removal', ->
     beforeEach (done) ->
       jobs = kue.createQueue({promotion:{interval:50}})
       Job = kue.Job
