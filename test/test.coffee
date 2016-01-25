@@ -424,7 +424,7 @@ describe 'Kue Tests', ->
         removeJobById id, 'failed', done for id in ids
 
 
-    it 'should receive a job remove event', (done) ->
+    it.skip 'should receive a job remove event', (done) ->
       jobs.on 'job remove', (id, type) ->
         if( type == 'removable-job' )
           id.should.be.equal( job.id )
